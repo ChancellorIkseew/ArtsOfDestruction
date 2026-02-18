@@ -15,7 +15,7 @@ public:
     Renderer(const Renderer&) = delete;
     Renderer& operator=(const Renderer&) = delete;
 
-    void onResize(uint32_t width, uint32_t height);
+    void onResize(const FPoint2D size);
 
     // Начало и конец кадра
     void beginFrame();

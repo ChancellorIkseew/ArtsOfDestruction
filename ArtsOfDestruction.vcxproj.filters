@@ -41,5 +41,8 @@
     <ClInclude Include="src\render\renderer.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\detail\bgfx_shader.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,14 +1,21 @@
 #pragma once
 #include <BGFX/bgfx.h>
 #include <stdexcept>
+#include <span>
 #include "../renderer.hpp"
+#include "bgfx_shader.hpp"
 
-using BGFXRenderer = Renderer::Impl;
+struct Vertex {
+    float x, y, z;
+    uint32_t color;
+};
 
 class BGFXRenderer {
-    bgfx::Init init;
+    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+    bgfx::VertexLayout vertexLayout;
 public:
     BGFXRenderer(void* window, void* displayType, const FPoint2D size) {
+        bgfx::Init init;
         init.platformData.nwh = window;
         init.platformData.ndt = displayType;
 
@@ -18,10 +25,56 @@ public:
 
         if (!bgfx::init(init))
             throw std::runtime_error("Could not initialize BGFX");
+
+        vertexLayout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .end();
+
+        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_simple.bin");
+        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_simple.bin");
+        program = bgfx::createProgram(vertexShader, fragmentShader, true);
+
+        onResize(size);
     }
     ~BGFXRenderer() {
+        if (bgfx::isValid(program))
+            bgfx::destroy(program);
         bgfx::shutdown();
     }
+
+    void clear() {
+        bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::touch(0);
+    }
+    void render() {
+        bgfx::frame();
+    }
+
+    void onResize(const FPoint2D size) {
+        bgfx::reset(size.x, size.y, BGFX_RESET_VSYNC);
+        bgfx::setViewRect(0, 0, 0, size.x, size.y);
+    }
+
+    void drawGeometry(const std::span<Vertex> vertices, const std::span<uint16_t> indices) const {
+        if (vertices.empty() || indices.empty())
+            return;
+
+        bgfx::TransientVertexBuffer vertexBuffer;
+        bgfx::TransientIndexBuffer indexBuffer;
+
+        const uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
+        const uint32_t indexCount = static_cast<uint32_t>(indices.size());
+
+        if (!bgfx::allocTransientBuffers(&vertexBuffer, vertexLayout, vertexCount, &indexBuffer, indexCount))
+            return;
+
+        std::memcpy(vertexBuffer.data, vertices.data(), vertexCount * sizeof(Vertex));
+        std::memcpy(indexBuffer.data, indices.data(), indexCount * sizeof(uint16_t));
+
+        bgfx::setVertexBuffer(0, &vertexBuffer);
+        bgfx::setIndexBuffer(&indexBuffer);
+        bgfx::setState(BGFX_STATE_DEFAULT);
+        bgfx::submit(0, program);
+    }
 };
-
-

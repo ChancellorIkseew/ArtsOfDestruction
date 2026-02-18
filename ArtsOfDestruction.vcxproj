@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\render\detail\bgfx_renderer.hpp" />
+    <ClInclude Include="src\render\detail\bgfx_shader.hpp" />
     <ClInclude Include="src\render\renderer.hpp" />
     <ClInclude Include="src\window\detail\sdl_window.hpp" />
     <ClInclude Include="src\window\window.hpp" />
@@ -151,6 +152,7 @@
       <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)/src;$(SolutionDir)/libs/include;</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

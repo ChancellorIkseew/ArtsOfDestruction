@@ -1,0 +1,21 @@
+# project:
+build/
+obj/
+res/scripts/
+saves/
+screenshots/
+controls.tin
+settings.tin
+
+# logs:
+latest_log.txt
+
+# IDE:
+.vscode/
+.vs/
+
+# CMake_cache
+cmake_proj/*
+!cmake_proj/CMakeLists.txt
+
+#copied from Turret_2 with minimal changes

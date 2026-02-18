@@ -31,21 +31,22 @@ public:
 	void setMode(const Mode mode) {
 		switch (mode) {
 		case Mode::windowed:
-			SDL_SetWindowBordered(sdlWindow, true);
 			SDL_SetWindowFullscreen(sdlWindow, false);
+			SDL_SetWindowBordered(sdlWindow, true);
 			SDL_SetWindowSize(sdlWindow, size.x, size.y);
+			SDL_SetWindowPosition(sdlWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 			break;
 		case Mode::borderless: {
-			const SDL_DisplayID displayID = SDL_GetDisplayForWindow(sdlWindow);
-			SDL_Rect displayRect = {};
-			SDL_GetDisplayBounds(displayID, &displayRect);
-			SDL_SetWindowBordered(sdlWindow, false);
 			SDL_SetWindowFullscreen(sdlWindow, false);
-			SDL_SetWindowSize(sdlWindow, displayRect.w, displayRect.h);
+			SDL_SetWindowBordered(sdlWindow, false);
+			const SDL_DisplayID displayID = SDL_GetDisplayForWindow(sdlWindow);
+			const SDL_DisplayMode* displayMode = SDL_GetCurrentDisplayMode(displayID);
+			if (displayMode)
+			    SDL_SetWindowSize(sdlWindow, displayMode->w, displayMode->h);
+			SDL_SetWindowPosition(sdlWindow, 0, 0);
 		    break;
 		}
 		case Mode::fullscreen:
-			SDL_SetWindowBordered(sdlWindow, false);
 			SDL_SetWindowFullscreen(sdlWindow, true);
 			break;
 		}

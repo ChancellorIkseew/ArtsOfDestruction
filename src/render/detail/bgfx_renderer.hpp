@@ -4,6 +4,8 @@
 #include <span>
 #include "../renderer.hpp"
 #include "bgfx_shader.hpp"
+#include "camera/camera.hpp"
+#include "math/math.hpp"
 
 struct Vertex {
     float x, y, z;
@@ -47,7 +49,10 @@ public:
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
         bgfx::touch(0);
     }
-    void render() {
+    void render(const Camera& camera, const FPoint2D windowSize) {
+        const FMatrix4x4 view = camera.getView();
+        const FMatrix4x4 projection = camera.getProjection(windowSize);
+        bgfx::setViewTransform(0, &view, &projection);
         bgfx::frame();
     }
 

@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <memory>
 #include "config.hpp"
+#include "math/math.hpp"
 
-struct FPoint2D { float x, y; }; // потом перенести в отдельный файл со всеми координатами
 class SDLWindow;
 
 class Window {

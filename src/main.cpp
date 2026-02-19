@@ -44,8 +44,11 @@ int main() {
     std::vector<uint16_t> indices;
 
     buildPrism(vertices, indices, 0.0f, 0.0f, 0.0f, 1.0f);
-    
-    float time = 0.0f;
+
+    const FPoint3D position{ 5.0f, 5.0f, -10.0f };
+    const FPoint2D rotation{ 0.0f, 0.0f };
+    const float fow = 60.0f;
+    Camera camera(position, rotation, fow);
 
     while (window.isOpen()) {
         window.pollEvents();
@@ -56,38 +59,8 @@ int main() {
 
         renderer.clear();
 
-        float view[16];
-        float proj[16];
-
-        float model[16];
-        float result[16];
-
-        time += 0.01f;
-
-        // Камера: смотрим из (5, 5, -10) в центр (0, 0, 0)
-        bx::Vec3 eye = { 5.0f, 5.0f, -10.0f };
-        bx::Vec3 at = { 0.0f, 0.0f, 0.0f };
-        bx::mtxLookAt(view, eye, at);
-
-        bx::mtxRotateXYZ(model, time * 0.5f, time, 0.0f);
-
-
-        const FPoint2D size = window.getSize();
-
-        bx::mtxLookAt(view, eye, at);
-        bx::mtxProj(proj, 60.0f, size.x / size.y, 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-        bgfx::setViewTransform(0, view, proj);
-
-        // 2. Матрица конкретного объекта (вращение самой призмы)
-        bx::mtxRotateXYZ(model, time * 0.5f, time, 0.0f);
-
-        // 3. ПРИМЕНЯЕМ трансформацию к следующему вызову отрисовки
-        bgfx::setTransform(model);
-
-
-
         renderer.drawGeometry(vertices, indices);
-        renderer.render();
+        renderer.render(camera, window.getSize());
     }
 
     return 0;

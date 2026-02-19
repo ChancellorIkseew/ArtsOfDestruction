@@ -36,7 +36,6 @@
     <ClInclude Include="src\render\detail\bgfx_renderer.hpp" />
     <ClInclude Include="src\render\detail\bgfx_shader.hpp" />
     <ClInclude Include="src\render\renderer.hpp" />
-    <ClInclude Include="src\window\detail\sdl_window.hpp" />
     <ClInclude Include="src\window\window.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

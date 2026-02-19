@@ -16,7 +16,7 @@ class BGFXRenderer {
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
     bgfx::VertexLayout vertexLayout;
 public:
-    BGFXRenderer(void* window, void* displayType, const FPoint2D size) {
+    BGFXRenderer(void* window, void* displayType, const IPoint2D size) {
         bgfx::Init init;
         init.platformData.nwh = window;
         init.platformData.ndt = displayType;
@@ -56,7 +56,7 @@ public:
         bgfx::frame();
     }
 
-    void onResize(const FPoint2D size) {
+    void onResize(const IPoint2D size) {
         bgfx::reset(size.x, size.y, BGFX_RESET_VSYNC);
         bgfx::setViewRect(0, 0, 0, size.x, size.y);
     }

@@ -36,8 +36,8 @@ void buildPrism(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, f
 }
 
 int main() {
-    Window window({ 1280, 720 }, Window::Mode::windowed);
-    Window::NativeHandle handle = window.getNativeHandle();
+    Window window({ 1280, 720 }, WindowMode::windowed);
+    NativeHandle handle = window.getNativeHandle();
     BGFXRenderer renderer(handle.window, handle.displayType ,window.getSize());
     
     std::vector<Vertex> vertices;
@@ -53,14 +53,17 @@ int main() {
     while (window.isOpen()) {
         window.pollEvents();
 
+        const IPoint2D iWindowSize = window.getSize();
+        const FPoint2D fWindowSize{ iWindowSize.x, iWindowSize.y };
+
         if (window.isJustResized()) {
-            renderer.onResize(window.getSize());
+            renderer.onResize(iWindowSize);
         }
 
         renderer.clear();
 
         renderer.drawGeometry(vertices, indices);
-        renderer.render(camera, window.getSize());
+        renderer.render(camera, fWindowSize);
     }
 
     return 0;

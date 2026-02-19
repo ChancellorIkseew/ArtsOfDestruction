@@ -1,40 +1,43 @@
 #pragma once
 #include <cstdint>
-#include <memory>
 #include "config.hpp"
 #include "math/math.hpp"
 
-class SDLWindow;
+struct SDL_Window;
+enum class WindowMode : uint8_t { windowed, borderless, fullscreen };
+struct NativeHandle {
+    void* window = nullptr;
+    void* displayType = nullptr;
+};
 
 class Window {
-public:
-    enum class Mode : uint8_t { windowed, borderless, fullscreen };
-    struct NativeHandle {
-        void* window = nullptr;
-        void* displayType = nullptr;
-    };
-private:
-    std::unique_ptr<SDLWindow> window;
-    FPoint2D size;
-    Mode mode;
+    SDL_Window* sdlWindow = nullptr;
+    //Input input;
+    IPoint2D size;
+    WindowMode mode;
     bool open = true, justResized = true;
+    uint64_t fps = 60, requiredDelayNs = 16, realDelayNs = 0, frameStartNs = 0;
 public:
-    Window(const FPoint2D size, const Window::Mode mode);
+    Window(const IPoint2D size, const WindowMode mode);
     ~Window();
     //
-    FPoint2D getSize() const { return size; }
-    Mode getMode() const { return mode; }
+    IPoint2D getSize() const { return size; }
+    WindowMode getMode() const { return mode; }
+    uint64_t getFPS() const { return fps; }
     bool isOpen() const { return open; }
-    bool isJustResized() const { return justResized; }
     //
-    void setSize(const FPoint2D size);
-    void setMode(const Mode mode);
-    void close();
+    void setSize(const IPoint2D size);
+    void setMode(const WindowMode mode);
+    void setFPS(const uint64_t fps);
+    void close() { open = false; }
     //
-    // TODO: непарные методы будут здесь
     void pollEvents();
+    void makeFrameDelay();
     //
-    NativeHandle getNativeHandle();
+    NativeHandle getNativeHandle() const;
+    uint64_t getralFrameDelayNS() const { return realDelayNs; }
+    bool isJustResized() const { return justResized; }
+    //Input& getInput() { return input; }
 private:
     rem_disable_copy_and_move(Window)
 };

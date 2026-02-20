@@ -4,15 +4,15 @@
 enum class BindName : uint8_t { 
    Move_left,
    Move_right,
-   Move_forvard,
+   Move_forward,
    Move_back,
    Move_up,
    Move_down,
    //
-   Rotate_left,
-   Rotate_right,
-   Rotate_up,
-   Rotate_down,
+   //Rotate_left,
+   //Rotate_right,
+   //Rotate_up,
+   //Rotate_down,
    //
    Count
 };
@@ -38,4 +38,19 @@ struct Binding {
 
     constexpr Binding(const int code, const InputType inputType) :
         code(code), inputType(inputType) {}
+    Binding() = default;
+};
+
+class Controls {
+    Binding bindings[BINDNAMES_COUNT];
+public:
+    Binding at(BindName bindName) const {
+        return bindings[static_cast<size_t>(bindName)];
+    }
+    void setBinding(BindName bindName, Binding binding) {
+        bindings[static_cast<size_t>(bindName)] = binding;
+    }
+
+    Binding* begin() { return bindings; }
+    Binding* end() { return begin() + BINDNAMES_COUNT; }
 };

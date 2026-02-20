@@ -39,14 +39,15 @@ int main() {
     Window window({ 1280, 720 }, WindowMode::windowed);
     NativeHandle handle = window.getNativeHandle();
     BGFXRenderer renderer(handle.window, handle.displayType ,window.getSize());
+    const Input& input = window.getInput();
     
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;
 
     buildPrism(vertices, indices, 0.0f, 0.0f, 0.0f, 1.0f);
 
-    const FPoint3D position{ 5.0f, 5.0f, -10.0f };
-    const FPoint2D rotation{ 0.0f, 0.0f };
+    FPoint3D position{ 5.0f, 5.0f, -10.0f };
+    FPoint2D rotation{ 0.0f, 0.0f };
     const float fow = 60.0f;
     Camera camera(position, rotation, fow);
 
@@ -56,14 +57,34 @@ int main() {
         const IPoint2D iWindowSize = window.getSize();
         const FPoint2D fWindowSize{ iWindowSize.x, iWindowSize.y };
 
+        const float delta = 0.01f;
+        if (input.active(BindName::Move_forward))
+            position.z += delta;
+        if (input.active(BindName::Move_back))
+            position.z -= delta;
+        if (input.active(BindName::Move_left))
+            position.x += delta;
+        if (input.active(BindName::Move_right))
+            position.x -= delta;
+        if (input.active(BindName::Move_up))
+            position.y += delta;
+        if (input.active(BindName::Move_down))
+            position.y -= delta;
+
+        rotation.x += input.getMouseMove().x * delta;
+        rotation.y += input.getMouseMove().y * delta;
+
+        camera.setPosition(position);
+        camera.setRotation(rotation);
+
         if (window.isJustResized()) {
             renderer.onResize(iWindowSize);
         }
 
         renderer.clear();
-
         renderer.drawGeometry(vertices, indices);
         renderer.render(camera, fWindowSize);
+        window.makeFrameDelay();
     }
 
     return 0;

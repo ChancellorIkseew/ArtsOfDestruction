@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <stdexcept>
 
-Window::Window(const IPoint2D size, const WindowMode mode) {
+Window::Window(IPoint2D size, WindowMode mode) {
     if (!SDL_Init(SDL_INIT_VIDEO))
         throw std::runtime_error("Could not initialize SDL");
     sdlWindow = SDL_CreateWindow("AoD demo", 800, 600, SDL_WINDOW_RESIZABLE);
@@ -21,13 +21,13 @@ Window::~Window() {
     SDL_Quit();
 }
 
-void Window::setSize(const IPoint2D size) {
+void Window::setSize(IPoint2D size) {
     this->size = size;
     if (mode == WindowMode::windowed)
         SDL_SetWindowSize(sdlWindow, size.x, size.y);
 }
 
-void Window::setMode(const WindowMode mode) {
+void Window::setMode(WindowMode mode) {
     switch (mode) {
     case WindowMode::windowed:
         SDL_SetWindowFullscreen(sdlWindow, false);
@@ -68,7 +68,7 @@ void Window::makeFrameDelay() {
 
 void Window::pollEvents() {
     justResized = false;
-    //input(reset);
+    input.reset();
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -81,7 +81,7 @@ void Window::pollEvents() {
             break;
         }
         default:
-            //input.update(event);
+            input.update(event);
             break;
         }
     }

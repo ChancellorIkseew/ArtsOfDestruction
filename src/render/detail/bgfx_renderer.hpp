@@ -10,11 +10,14 @@
 struct Vertex {
     float x, y, z;
     uint32_t color;
+    float u, v;
 };
 
 class BGFXRenderer {
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
     bgfx::VertexLayout vertexLayout;
+    bgfx::UniformHandle samplerTexColor;
+    bgfx::TextureHandle texture;
 public:
     BGFXRenderer(void* window, void* displayType, const IPoint2D size) {
         bgfx::Init init;
@@ -31,10 +34,13 @@ public:
         vertexLayout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
             .end();
 
-        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_simple.bin");
-        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_simple.bin");
+        texture = loadTextureWithSDL("res/images/icon.png");
+        samplerTexColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_prism.bin");
+        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_prism.bin");
         program = bgfx::createProgram(vertexShader, fragmentShader, true);
 
         onResize(size);
@@ -77,6 +83,7 @@ public:
         std::memcpy(vertexBuffer.data, vertices.data(), vertexCount * sizeof(Vertex));
         std::memcpy(indexBuffer.data, indices.data(), indexCount * sizeof(uint16_t));
 
+        bgfx::setTexture(0, samplerTexColor, texture);
         bgfx::setVertexBuffer(0, &vertexBuffer);
         bgfx::setIndexBuffer(&indexBuffer);
         bgfx::setState(BGFX_STATE_DEFAULT);

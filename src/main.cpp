@@ -5,34 +5,48 @@
 #include "render/detail/bgfx_renderer.hpp"
 
 void buildPrism(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, float x, float y, float z, float size) {
-    uint16_t baseIdx = (uint16_t)vertices.size();
-
-    // 6 вершин (3 снизу, 3 сверху)
-    // Основание (y)
-    vertices.push_back({ x,        y, z + size, 0xff0000ff }); // 0: низ перед
-    vertices.push_back({ x - size, y, z - size, 0xff00ff00 }); // 1: низ лево
-    vertices.push_back({ x + size, y, z - size, 0xffff0000 }); // 2: низ право
-
-    // Верхушка (y + высота)
     float height = size * 2.0f;
-    vertices.push_back({ x,          y + height, z + size, 0xff0000ff }); // 3: верх перед
-    vertices.push_back({ x - size, y + height, z - size, 0xff00ff00 }); // 4: верх лево
-    vertices.push_back({ x + size, y + height, z - size, 0xffff0000 }); // 5: верх право
+    uint32_t color = 0xffffffff;
 
-    // Индексы (8 треугольников = 24 индекса)
-    uint16_t prismIndices[] = {
-        // Основания
-        0, 1, 2,       // низ
-        3, 5, 4,       // верх
-        // Боковые грани (по 2 треугольника на грань)
-        0, 3, 4, 0, 4, 1, // грань лево-перед
-        1, 4, 5, 1, 5, 2, // грань зад
-        2, 5, 3, 2, 3, 0  // грань право-перед
+    // Определяем 3 точки основания (вид сверху)
+    struct Pt { float x, z; float u; };
+    Pt p[] = {
+        { 0.0f,  size, 0.5f }, // перед
+        { -size, -size, 0.0f }, // лево-зад
+        { size,  -size, 1.0f }  // право-зад
     };
 
-    for (auto i : prismIndices) {
-        indices.push_back(baseIdx + i);
+    // --- 1. БОКОВЫЕ ГРАНИ (3 грани по 4 вершины = 12 вершин) ---
+    for (int i = 0; i < 3; ++i) {
+        int next = (i + 1) % 3;
+        uint16_t startIdx = (uint16_t)vertices.size();
+
+        // Порядок: низ-лево, низ-право, верх-право, верх-лево
+        vertices.push_back({ x + p[i].x,    y,          z + p[i].z,    color, 0.0f, 0.0f });
+        vertices.push_back({ x + p[next].x, y,          z + p[next].z, color, 1.0f, 0.0f });
+        vertices.push_back({ x + p[next].x, y + height, z + p[next].z, color, 1.0f, 1.0f });
+        vertices.push_back({ x + p[i].x,    y + height, z + p[i].z,    color, 0.0f, 1.0f });
+
+        // Индексы (CCW - против часовой стрелки)
+        indices.push_back(startIdx + 0); indices.push_back(startIdx + 1); indices.push_back(startIdx + 2);
+        indices.push_back(startIdx + 0); indices.push_back(startIdx + 2); indices.push_back(startIdx + 3);
     }
+
+    // --- 2. НИЖНЕЕ ОСНОВАНИЕ (3 вершины) ---
+    uint16_t botIdx = (uint16_t)vertices.size();
+    vertices.push_back({ x + p[0].x, y, z + p[0].z, color, 0.5f, 1.0f });
+    vertices.push_back({ x + p[1].x, y, z + p[1].z, color, 0.0f, 0.0f });
+    vertices.push_back({ x + p[2].x, y, z + p[2].z, color, 1.0f, 0.0f });
+
+    indices.push_back(botIdx + 0); indices.push_back(botIdx + 2); indices.push_back(botIdx + 1);
+
+    // --- 3. ВЕРХНЕЕ ОСНОВАНИЕ (3 вершины) ---
+    uint16_t topIdx = (uint16_t)vertices.size();
+    vertices.push_back({ x + p[0].x, y + height, z + p[0].z, color, 0.5f, 1.0f });
+    vertices.push_back({ x + p[1].x, y + height, z + p[1].z, color, 0.0f, 0.0f });
+    vertices.push_back({ x + p[2].x, y + height, z + p[2].z, color, 1.0f, 0.0f });
+
+    indices.push_back(topIdx + 0); indices.push_back(topIdx + 1); indices.push_back(topIdx + 2);
 }
 
 int main() {

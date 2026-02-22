@@ -11,6 +11,7 @@ struct Vertex {
     float x, y, z;
     uint32_t color;
     float u, v;
+    float nx, ny, nz;
 };
 
 class BGFXRenderer {
@@ -35,12 +36,13 @@ public:
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
             .end();
 
         texture = loadTextureWithSDL("res/images/icon.png");
         samplerTexColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_prism.bin");
-        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_prism.bin");
+        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_prism_tex_and_light.bin");
+        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_prism_tex_and_light.bin");
         program = bgfx::createProgram(vertexShader, fragmentShader, true);
 
         onResize(size);

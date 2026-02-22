@@ -22,6 +22,7 @@
     <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\debug\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render\detail\asset_load.cpp" />
     <ClCompile Include="src\render\renderer.cpp" />
     <ClCompile Include="src\window\input\input.cpp" />
     <ClCompile Include="src\window\window.cpp" />

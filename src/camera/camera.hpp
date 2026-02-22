@@ -28,7 +28,7 @@ public:
 
     glm::vec3 getForward() const {
         glm::quat orientation = glm::quat(glm::vec3(rotation.y, rotation.x, 0.0f));
-        return orientation * glm::vec3(0.0f, 0.0f, 1.0f); // Для Left-Handed системы
+        return orientation * glm::vec3(0.0f, 0.0f, 1.0f); // Р”Р»СЏ Left-Handed СЃРёСЃС‚РµРјС‹
     }
 
     glm::vec3 getRight() const {

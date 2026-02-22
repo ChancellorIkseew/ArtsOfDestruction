@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
-* text=auto
+* text=auto eol=lf
 *.cpp text working-tree-encoding=UTF-8
 *.hpp text working-tree-encoding=UTF-8
 *.inl text working-tree-encoding=UTF-8

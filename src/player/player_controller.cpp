@@ -8,19 +8,19 @@
 using PlCtr = PlayerController;
 
 void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) const {
-    // 1. Îáðàáîòêà ïîâîðîòà (Ìûøü)
+    // 1. ÐžÐ±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð¿Ð¾Ð²Ð¾Ñ€Ð¾Ñ‚Ð° (ÐœÑ‹ÑˆÑŒ)
     FPoint2D mouseDelta = input.getMouseMove();
     FPoint2D currentRot = camera.getRotation();
 
     currentRot.x += mouseDelta.x * lookSensitivity * deltaTimeNs;
     currentRot.y += mouseDelta.y * lookSensitivity * deltaTimeNs;
 
-    // Îãðàíè÷èâàåì íàêëîí ãîëîâû (Pitch), ÷òîáû íå ñäåëàòü ñàëüòî
+    // ÐžÐ³Ñ€Ð°Ð½Ð¸Ñ‡Ð¸Ð²Ð°ÐµÐ¼ Ð½Ð°ÐºÐ»Ð¾Ð½ Ð³Ð¾Ð»Ð¾Ð²Ñ‹ (Pitch), Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð½Ðµ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ ÑÐ°Ð»ÑŒÑ‚Ð¾
     currentRot.y = std::clamp(currentRot.y, -HALF_PI_F, HALF_PI_F);
 
     camera.setRotation(currentRot);
 
-    // 2. Îáðàáîòêà äâèæåíèÿ (Êëàâèàòóðà)
+    // 2. ÐžÐ±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ° Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ (ÐšÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ð°)
     glm::vec3 direction(0.0f);
     glm::vec3 forward = camera.getForward();
     glm::vec3 right = camera.getRight();
@@ -32,7 +32,7 @@ void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) const 
     if (input.active(BindName::Move_up))      direction.y += 1.0f;
     if (input.active(BindName::Move_down))    direction.y -= 1.0f;
 
-    // Íîðìàëèçóåì, ÷òîáû ïî äèàãîíàëè íå áåãàòü áûñòðåå
+    // ÐÐ¾Ñ€Ð¼Ð°Ð»Ð¸Ð·ÑƒÐµÐ¼, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ð¾ Ð´Ð¸Ð°Ð³Ð¾Ð½Ð°Ð»Ð¸ Ð½Ðµ Ð±ÐµÐ³Ð°Ñ‚ÑŒ Ð±Ñ‹ÑÑ‚Ñ€ÐµÐµ
     if (glm::length(direction) > 0.0f) {
         direction = glm::normalize(direction);
 

@@ -37,22 +37,22 @@ bgfx::ShaderHandle loadShader(const fs::path& path) {
 }
 
 bgfx::TextureHandle loadTextureWithSDL(const fs::path& path) {
-    // 1. Çàãðóæàåì ÷åðåç SDL3
+    // 1. Ð—Ð°Ð³Ñ€ÑƒÐ¶Ð°ÐµÐ¼ Ñ‡ÐµÑ€ÐµÐ· SDL3
     SDL_Surface* surface = SDL_LoadPNG(path.string().c_str());
     if (!surface)
         return BGFX_INVALID_HANDLE;
 
-    // 2. Êîíâåðòèðóåì â RGBA32, åñëè ôîðìàò äðóãîé (âàæíî äëÿ ïðåäñêàçóåìîñòè)
+    // 2. ÐšÐ¾Ð½Ð²ÐµÑ€Ñ‚Ð¸Ñ€ÑƒÐµÐ¼ Ð² RGBA32, ÐµÑÐ»Ð¸ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð´Ñ€ÑƒÐ³Ð¾Ð¹ (Ð²Ð°Ð¶Ð½Ð¾ Ð´Ð»Ñ Ð¿Ñ€ÐµÐ´ÑÐºÐ°Ð·ÑƒÐµÐ¼Ð¾ÑÑ‚Ð¸)
     SDL_Surface* converted = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
     SDL_DestroySurface(surface);
 
     if (!converted)
         return BGFX_INVALID_HANDLE;
 
-    // 3. Êîïèðóåì äàííûå â ïàìÿòü, êîòîðóþ bgfx îòïðàâèò íà GPU
+    // 3. ÐšÐ¾Ð¿Ð¸Ñ€ÑƒÐµÐ¼ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð² Ð¿Ð°Ð¼ÑÑ‚ÑŒ, ÐºÐ¾Ñ‚Ð¾Ñ€ÑƒÑŽ bgfx Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð¸Ñ‚ Ð½Ð° GPU
     const bgfx::Memory* mem = bgfx::copy(converted->pixels, converted->pitch * converted->h);
 
-    // 4. Ñîçäàåì òåêñòóðó
+    // 4. Ð¡Ð¾Ð·Ð´Ð°ÐµÐ¼ Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ñƒ
     bgfx::TextureHandle handle = bgfx::createTexture2D(
         (uint16_t)converted->w,
         (uint16_t)converted->h,

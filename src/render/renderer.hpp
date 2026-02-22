@@ -11,16 +11,16 @@ public:
     Renderer(void* nativeWindow, void* nativeDisplayType, const FPoint2D size);
     ~Renderer();
 
-    // Запрещаем копирование, так как рендер владеет ресурсами
+    // Р—Р°РїСЂРµС‰Р°РµРј РєРѕРїРёСЂРѕРІР°РЅРёРµ, С‚Р°Рє РєР°Рє СЂРµРЅРґРµСЂ РІР»Р°РґРµРµС‚ СЂРµСЃСѓСЂСЃР°РјРё
     Renderer(const Renderer&) = delete;
     Renderer& operator=(const Renderer&) = delete;
 
     void onResize(const FPoint2D size);
 
-    // Начало и конец кадра
+    // РќР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РєР°РґСЂР°
     void beginFrame();
     void endFrame();
 
-    // Пример высокоуровневого метода
+    // РџСЂРёРјРµСЂ РІС‹СЃРѕРєРѕСѓСЂРѕРІРЅРµРІРѕРіРѕ РјРµС‚РѕРґР°
     void drawPrism(const struct PrismData& data); 
 };

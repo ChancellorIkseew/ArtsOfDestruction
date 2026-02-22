@@ -27,7 +27,7 @@ public:
 
         init.resolution.width = static_cast<uint32_t>(size.x);
         init.resolution.height = static_cast<uint32_t>(size.y);
-        init.resolution.reset = BGFX_RESET_VSYNC; // Βκλώχενθε VSync
+        init.resolution.reset = BGFX_RESET_VSYNC; // Π’ΠΊΠ»ΡΡ‡ΠµΠ½ΠΈΠµ VSync
 
         if (!bgfx::init(init))
             throw std::runtime_error("Could not initialize BGFX");

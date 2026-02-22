@@ -22,6 +22,7 @@
     <ClCompile Include="src\camera\camera.cpp" />
     <ClCompile Include="src\debug\logger.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\player\player_controller.cpp" />
     <ClCompile Include="src\render\detail\asset_load.cpp" />
     <ClCompile Include="src\render\renderer.cpp" />
     <ClCompile Include="src\window\input\input.cpp" />
@@ -33,6 +34,7 @@
     <ClInclude Include="src\debug\logger.hpp" />
     <ClInclude Include="src\math\math.hpp" />
     <ClInclude Include="src\math\rem_glm_convert.hpp" />
+    <ClInclude Include="src\player\player_controller.hpp" />
     <ClInclude Include="src\render\detail\bgfx_renderer.hpp" />
     <ClInclude Include="src\render\detail\bgfx_shader.hpp" />
     <ClInclude Include="src\render\renderer.hpp" />

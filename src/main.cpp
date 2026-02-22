@@ -1,9 +1,8 @@
-#include <BGFX/bgfx.h>
-#include <BX/math.h>
 #include "window/window.hpp"
 #include <vector>
 #include "render/detail/bgfx_renderer.hpp"
 #include "debug/logger.hpp"
+#include "player/player_controller.hpp"
 
 void buildPrism(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, float x, float y, float z, float size) {
     float height = size * 2.0f;
@@ -52,6 +51,7 @@ int main() {
     NativeHandle handle = window.getNativeHandle();
     BGFXRenderer renderer(handle.window, handle.displayType ,window.getSize());
     const Input& input = window.getInput();
+    PlayerController playerController;
     
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;
@@ -65,29 +65,10 @@ int main() {
 
     while (window.isOpen()) {
         window.pollEvents();
+        playerController.update(camera, input, window.getRealFrameDelayNS());
 
         const IPoint2D iWindowSize = window.getSize();
         const FPoint2D fWindowSize{ iWindowSize.x, iWindowSize.y };
-
-        const float delta = 0.01f;
-        if (input.active(BindName::Move_forward))
-            position.z += delta;
-        if (input.active(BindName::Move_back))
-            position.z -= delta;
-        if (input.active(BindName::Move_left))
-            position.x += delta;
-        if (input.active(BindName::Move_right))
-            position.x -= delta;
-        if (input.active(BindName::Move_up))
-            position.y += delta;
-        if (input.active(BindName::Move_down))
-            position.y -= delta;
-
-        rotation.x += input.getMouseMove().x * delta;
-        rotation.y += input.getMouseMove().y * delta;
-
-        camera.setPosition(position);
-        camera.setRotation(rotation);
 
         if (window.isJustResized()) {
             renderer.onResize(iWindowSize);

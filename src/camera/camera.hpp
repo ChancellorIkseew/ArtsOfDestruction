@@ -27,7 +27,7 @@ public:
     FMatrix4x4 getProjection(const FPoint2D windowSize) const;
 
     glm::vec3 getForward() const {
-        glm::quat orientation = glm::quat(glm::vec3(rotation.y, rotation.x, 0.0f));
+        glm::quat orientation = glm::quat(glm::vec3(-rotation.y, -rotation.x, 0.0f));
         return orientation * glm::vec3(0.0f, 0.0f, 1.0f); // Для Left-Handed системы
     }
 

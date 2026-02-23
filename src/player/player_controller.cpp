@@ -12,8 +12,8 @@ void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) const 
     FPoint2D mouseDelta = input.getMouseMove();
     FPoint2D currentRot = camera.getRotation();
 
-    currentRot.x += mouseDelta.x * lookSensitivity * deltaTimeNs;
-    currentRot.y += mouseDelta.y * lookSensitivity * deltaTimeNs;
+    currentRot.x -= mouseDelta.x * lookSensitivity * deltaTimeNs;
+    currentRot.y -= mouseDelta.y * lookSensitivity * deltaTimeNs;
 
     // Ограничиваем наклон головы (Pitch), чтобы не сделать сальто
     currentRot.y = std::clamp(currentRot.y, -HALF_PI_F, HALF_PI_F);

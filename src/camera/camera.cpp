@@ -3,7 +3,7 @@
 #include "math/rem_glm_convert.hpp"
 
 FMatrix4x4 Camera::getView() const {
-    glm::quat orientation = glm::quat(glm::vec3(rotation.y, rotation.x, 0.0f));
+    glm::quat orientation = glm::quat(glm::vec3(-rotation.y, -rotation.x, 0.0f));
     glm::mat4 transform = glm::translate(glm::mat4(1.0f), toGlm(position)) * glm::mat4_cast(orientation);
     glm::mat4 view = glm::inverse(transform);
     return toRem(view);

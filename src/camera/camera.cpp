@@ -11,5 +11,5 @@ FMatrix4x4 Camera::getView() const {
 
 FMatrix4x4 Camera::getProjection(const FPoint2D windowSize) const {
     const float aspect = windowSize.x / windowSize.y;
-    return toRem(glm::perspectiveLH(glm::radians(fov), aspect, 0.1f, 1000.0f));
+    return toRem(glm::perspectiveLH_ZO(glm::radians(fov), aspect, 0.1f, 1000.0f));
 }

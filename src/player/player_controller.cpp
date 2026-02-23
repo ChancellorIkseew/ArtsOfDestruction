@@ -7,7 +7,26 @@
 
 using PlCtr = PlayerController;
 
-void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) const {
+void PlCtr::updateFreeCamSpeed(const Input& input) {
+    constexpr float MIN_FRE_CAM_SPEED = 0.000'000'001f;
+    constexpr float MAX_FRE_CAM_SPEED = 0.000'000'050f;
+    constexpr float SCALE_FACTOR = 1.2f;
+
+    switch (input.getMouseWheelScroll()) {
+    case MouseWheelScroll::none:
+        return;
+    case MouseWheelScroll::up:
+        freeCamSpeed /= SCALE_FACTOR;
+        break;
+    case MouseWheelScroll::down:
+        freeCamSpeed *= SCALE_FACTOR;
+        break;
+    }
+    freeCamSpeed = std::clamp(freeCamSpeed, MIN_FRE_CAM_SPEED, MAX_FRE_CAM_SPEED);
+}
+
+void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) {
+    updateFreeCamSpeed(input);
     // 1. Обработка поворота (Мышь)
     FPoint2D mouseDelta = input.getMouseMove();
     FPoint2D currentRot = camera.getRotation();
@@ -35,8 +54,7 @@ void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) const 
     // Нормализуем, чтобы по диагонали не бегать быстрее
     if (glm::length(direction) > 0.0f) {
         direction = glm::normalize(direction);
-
-        FPoint3D offset = toRem(direction * moveSpeed * deltaTimeNs);
+        FPoint3D offset = toRem(direction * freeCamSpeed * deltaTimeNs);
 
         FPoint3D position = camera.getPosition();
         position.x += offset.x;

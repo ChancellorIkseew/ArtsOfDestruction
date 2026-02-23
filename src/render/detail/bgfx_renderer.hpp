@@ -14,6 +14,11 @@ struct Vertex {
     float nx, ny, nz;
 };
 
+struct ModelData {
+    std::vector<Vertex> vertices;
+    std::vector<uint16_t> indices;
+};
+
 class BGFXRenderer {
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
     bgfx::VertexLayout vertexLayout;

@@ -4,6 +4,8 @@
 #include <filesystem>
 
 namespace fs = std::filesystem;
+struct ModelData;
 
 bgfx::ShaderHandle loadShader(const fs::path& path);
 bgfx::TextureHandle loadTextureWithSDL(const fs::path& path);
+ModelData loadOBJ(const fs::path& path);

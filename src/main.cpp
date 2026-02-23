@@ -18,6 +18,9 @@ int main() {
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;
 
+    ModelData model = loadOBJ("res/models/test_town.obj");
+    vertices.insert(vertices.end(), model.vertices.begin(), model.vertices.end());
+    indices.insert(indices.end(), model.indices.begin(), model.indices.end());
     buildPrism(vertices, indices, 0.0f, 0.0f, 0.0f, 1.0f);
     buildFloor(vertices, indices, 100.0f, 1.0f);
 

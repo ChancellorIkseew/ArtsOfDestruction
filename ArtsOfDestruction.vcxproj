@@ -32,6 +32,7 @@
     <ClInclude Include="src\camera\camera.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\debug\logger.hpp" />
+    <ClInclude Include="src\demo_scene.hpp" />
     <ClInclude Include="src\math\math.hpp" />
     <ClInclude Include="src\math\rem_glm_convert.hpp" />
     <ClInclude Include="src\player\player_controller.hpp" />

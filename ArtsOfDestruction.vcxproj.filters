@@ -77,6 +77,9 @@
     <ClInclude Include="src\player\player_controller.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\demo_scene.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\debug\color_format.inl">

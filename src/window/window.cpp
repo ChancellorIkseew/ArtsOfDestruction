@@ -84,7 +84,15 @@ void Window::pollEvents() {
             input.update(event);
             break;
         }
-    }
+    }  
+}
+
+void Window::showCursor(bool flag) {
+    // TODO: needs refactoring later
+    if (flag) SDL_ShowCursor();
+    else      SDL_HideCursor();
+    SDL_SetWindowRelativeMouseMode(sdlWindow, !flag);
+    cursorVisible = SDL_CursorVisible();
 }
 
 

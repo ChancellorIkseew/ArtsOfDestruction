@@ -25,7 +25,8 @@ int main() {
     FPoint2D rotation{ 0.0f, 0.0f };
     const float fow = 60.0f;
     Camera camera(position, rotation, fow);
-
+    
+    window.showCursor(false);
     while (window.isOpen()) {
         window.pollEvents();
         playerController.update(camera, input, window.getRealFrameDelayNS());

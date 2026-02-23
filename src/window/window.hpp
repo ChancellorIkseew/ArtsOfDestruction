@@ -16,7 +16,7 @@ class Window {
     Input input;
     IPoint2D size;
     WindowMode mode;
-    bool open = true, justResized = true;
+    bool open = true, justResized = true, cursorVisible = true;
     uint64_t fps = 60, requiredDelayNs = 16, realDelayNs = 0, frameStartNs = 0;
 public:
     Window(IPoint2D size, WindowMode mode);
@@ -26,11 +26,13 @@ public:
     WindowMode getMode() const { return mode; }
     uint64_t getFPS() const { return fps; }
     bool isOpen() const { return open; }
+    bool isCursorVisible() const { return cursorVisible; }
     //
     void setSize(IPoint2D size);
     void setMode(WindowMode mode);
     void setFPS(uint64_t fps);
     void close() { open = false; }
+    void showCursor(bool flag);
     //
     void pollEvents();
     void makeFrameDelay();

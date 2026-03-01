@@ -4,7 +4,7 @@
 #include "debug/logger.hpp"
 #include "player/player_controller.hpp"
 #include "demo_scene.hpp"
-
+#include "math/rem_glm_convert.hpp"
 
 
 int main() {
@@ -28,6 +28,32 @@ int main() {
     FPoint2D rotation{ 0.0f, 0.0f };
     const float fow = 60.0f;
     Camera camera(position, rotation, fow);
+
+
+    std::vector<FMatrix4x4> instanceMatrices;
+    uint32_t gridSide = 10;
+    float spacing = 2.0f;
+
+    for (uint32_t z = 0; z < gridSide; ++z) {
+        for (uint32_t x = 0; x < gridSide; ++x) {
+            // Создаем базовую матрицу (Identity)
+            glm::mat4 model = glm::mat4(1.0f);
+
+            // 1. Позиция (перемещаем куст в точку на сетке)
+            model = glm::translate(model, glm::vec3(x * spacing, 0.0f, z * spacing));
+
+            // 2. Поворот (необязательно, но добавим немного рандома для живости)
+            // Если куст плоский, можно вращать только вокруг оси Y
+            float randomRotation = (float)(rand() % 360);
+            model = glm::rotate(model, glm::radians(randomRotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
+            // 3. Масштаб (чуть-чуть варьируем размер)
+            float scale = 0.8f + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * 0.4f;
+            model = glm::scale(model, glm::vec3(scale));
+
+            //instanceMatrices.push_back(toRem(glm::transpose(model)));
+        }
+    }
     
     window.showCursor(false);
     while (window.isOpen()) {

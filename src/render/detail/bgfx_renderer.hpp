@@ -21,6 +21,8 @@ struct ModelData {
 
 class BGFXRenderer {
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+    bgfx::ProgramHandle instancingShaderProgram = BGFX_INVALID_HANDLE;
+
     bgfx::VertexLayout vertexLayout;
     bgfx::UniformHandle samplerTexColor;
     bgfx::TextureHandle texture;
@@ -49,6 +51,10 @@ public:
         bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_prism_tex_and_light.bin");
         bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_prism_tex_and_light.bin");
         program = bgfx::createProgram(vertexShader, fragmentShader, true);
+
+        bgfx::ShaderHandle vertexShader1 = loadShader("res/shaders/vs_instancing.bin");
+        bgfx::ShaderHandle fragmentShader1 = loadShader("res/shaders/fs_instancing.bin");
+        instancingShaderProgram = bgfx::createProgram(vertexShader1, fragmentShader1, true);
 
         onResize(size);
     }
@@ -95,5 +101,36 @@ public:
         bgfx::setIndexBuffer(&indexBuffer);
         bgfx::setState(BGFX_STATE_DEFAULT);
         bgfx::submit(0, program);
+    }
+
+    void drawGeometryI(const std::span<Vertex> vertices,
+        const std::span<uint16_t> indices,
+        const std::span<FMatrix4x4> instanceTransforms) const {
+
+        if (vertices.empty() || indices.empty() || instanceTransforms.empty())
+            return;
+
+        bgfx::TransientVertexBuffer vertexBuffer;
+        bgfx::TransientIndexBuffer indexBuffer;
+        bgfx::InstanceDataBuffer instanceBuffer;
+
+        const uint32_t vertexCount = static_cast<uint32_t>(vertices.size());
+        const uint32_t indexCount = static_cast<uint32_t>(indices.size());
+        uint32_t instanceCount = static_cast<uint32_t>(instanceTransforms.size());
+
+        if (!bgfx::allocTransientBuffers(&vertexBuffer, vertexLayout, vertexCount, &indexBuffer, indexCount))
+            return;
+        bgfx::allocInstanceDataBuffer(&instanceBuffer, instanceCount, sizeof(FMatrix4x4));
+
+        std::memcpy(vertexBuffer.data, vertices.data(), vertexCount * sizeof(Vertex));
+        std::memcpy(indexBuffer.data, indices.data(), indexCount * sizeof(uint16_t));
+        std::memcpy(instanceBuffer.data, instanceTransforms.data(), instanceCount * sizeof(FMatrix4x4));
+
+        bgfx::setTexture(0, samplerTexColor, texture);
+        bgfx::setVertexBuffer(0, &vertexBuffer);
+        bgfx::setIndexBuffer(&indexBuffer);
+        bgfx::setInstanceDataBuffer(&instanceBuffer);
+        bgfx::setState(BGFX_STATE_DEFAULT);
+        bgfx::submit(0, instancingShaderProgram);
     }
 };

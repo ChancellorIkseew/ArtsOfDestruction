@@ -84,14 +84,14 @@ ModelData loadOBJ(const fs::path& path) {
             // Мы точно знаем, что здесь 3 вершины (треугольник), так как была триангуляция
             for (size_t v_idx = 0; v_idx < 3; v_idx++) {
                 // ВАЖНО: для bgfx (Left-Hand) меняем порядок обхода: 0, 2, 1 вместо 0, 1, 2
-                size_t remapped_v = (v_idx == 1) ? 2 : (v_idx == 2) ? 1 : 0;
+                size_t remapped_v = (v_idx == 2) ? 2 : (v_idx == 1) ? 1 : 0;
 
                 tinyobj::index_t idx = shape.mesh.indices[3 * f + remapped_v];
 
                 Vertex vertex;
 
                 // 1. Позиции (Инвертируем X для вашей системы координат)
-                vertex.x = attrib.vertices[3 * idx.vertex_index + 0];
+                vertex.x = -attrib.vertices[3 * idx.vertex_index + 0];
                 vertex.y = attrib.vertices[3 * idx.vertex_index + 1];
                 vertex.z = attrib.vertices[3 * idx.vertex_index + 2];
 
@@ -109,7 +109,7 @@ ModelData loadOBJ(const fs::path& path) {
 
                 // 4. Нормали (Инвертируем X вслед за позицией)
                 if (idx.normal_index >= 0) {
-                    vertex.nx = -attrib.normals[3 * idx.normal_index + 0];
+                    vertex.nx = attrib.normals[3 * idx.normal_index + 0];
                     vertex.ny = attrib.normals[3 * idx.normal_index + 1];
                     vertex.nz = -attrib.normals[3 * idx.normal_index + 2];
                 }

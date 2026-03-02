@@ -5,34 +5,15 @@ module;
 #include <tiny_obj_loader.h>
 module Assets;
 
+import IO;
 import Logger;
 import Renderer;
 
 namespace fs = std::filesystem;
 static debug::Logger logger("asset_load");
 
-static std::string readFile(const fs::path& path) {
-    if (!fs::exists(path) || !fs::is_regular_file(path)) {
-        logger.error() << "File does not exist: " << fs::absolute(path);
-        return std::string();
-    }
-    //
-    std::ifstream fin(path, std::ios::binary | std::ios::ate);
-    if (!fin.is_open()) {
-        logger.error() << "Failed to open file: " << fs::absolute(path);
-        return std::string();
-    }
-    //
-    std::streamsize size = fin.tellg();
-    fin.seekg(0, std::ios::beg);
-    std::string str;
-    str.resize(size);
-    fin.read(str.data(), size);
-    return str;
-}
-
 bgfx::ShaderHandle loadShader(const fs::path& path) {
-    const std::string str = readFile(path);
+    const auto str = IO::readBinFile(path);
     const bgfx::Memory* mem = bgfx::copy(str.data(), static_cast<uint32_t>(str.size()));
     bgfx::ShaderHandle shader = bgfx::createShader(mem);
     if (!bgfx::isValid(shader))
@@ -41,8 +22,9 @@ bgfx::ShaderHandle loadShader(const fs::path& path) {
 }
 
 bgfx::TextureHandle loadTextureWithSDL(const fs::path& path) {
-    // 1. Загружаем через SDL3
-    SDL_Surface* surface = SDL_LoadPNG(path.string().c_str());
+    const auto buffer = IO::readBinFile(path);
+    SDL_IOStream* io = SDL_IOFromConstMem(buffer.data(), buffer.size());
+    SDL_Surface* surface = SDL_LoadPNG_IO(io, true);
     if (!surface)
         return BGFX_INVALID_HANDLE;
 
@@ -71,7 +53,7 @@ bgfx::TextureHandle loadTextureWithSDL(const fs::path& path) {
 }
 
 ModelData loadOBJ(const fs::path& path) {
-    const std::string obj = readFile(path);
+    const std::string obj = IO::loadTextFile(path);
     const std::string mtl = "";
     tinyobj::ObjReader reader;
     reader.ParseFromString(obj, mtl);

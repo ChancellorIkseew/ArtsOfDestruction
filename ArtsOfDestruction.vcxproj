@@ -23,6 +23,7 @@
     <ClCompile Include="src\debug\logger.cpp" />
     <ClCompile Include="src\debug\logger.cppm" />
     <ClCompile Include="src\demo_scene.cppm" />
+    <ClCompile Include="src\io\io.cppm" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\math\math.cppm" />
     <ClCompile Include="src\player\player_controller.cpp" />

@@ -1,34 +1,36 @@
-#pragma once
-#include <cstdint>
+module;
 #include "config.hpp"
-#include "input/input.hpp"
-#include "math/math.hpp"
-
 struct SDL_Window;
-enum class WindowMode : uint8_t { windowed, borderless, fullscreen };
-struct NativeHandle {
+export module Window;
+import std;
+import Input;
+import Math;
+using std::uint64_t;
+
+export enum class WindowMode : std::uint8_t { windowed, borderless, fullscreen };
+export struct NativeHandle {
     void* window = nullptr;
     void* displayType = nullptr;
 };
 
-class Window {
+export class Window {
     SDL_Window* sdlWindow = nullptr;
     Input input;
-    IPoint2D size;
+    vec2i size;
     WindowMode mode;
     bool open = true, justResized = true, cursorVisible = true;
-    uint64_t fps = 60, requiredDelayNs = 16, realDelayNs = 0, frameStartNs = 0;
+    uint64_t fps = 60, requiredDelayNs = 1'000'000'000 / 60, realDelayNs = 0, frameStartNs = 0;
 public:
-    Window(IPoint2D size, WindowMode mode);
+    Window(vec2i size, WindowMode mode);
     ~Window();
     //
-    IPoint2D getSize() const { return size; }
+    vec2i getSize() const { return size; }
     WindowMode getMode() const { return mode; }
     uint64_t getFPS() const { return fps; }
     bool isOpen() const { return open; }
     bool isCursorVisible() const { return cursorVisible; }
     //
-    void setSize(IPoint2D size);
+    void setSize(vec2i size);
     void setMode(WindowMode mode);
     void setFPS(uint64_t fps);
     void close() { open = false; }

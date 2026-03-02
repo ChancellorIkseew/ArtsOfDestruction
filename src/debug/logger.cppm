@@ -1,12 +1,12 @@
-#pragma once
-#include <cstdint>
-#include <sstream>
+module;
+export module Logger;
+import std;
 
-namespace debug {
-    enum class LogLevel : uint8_t { attention, debug, info, warning, error };
+export namespace debug {
+    enum class LogLevel : std::uint8_t { attention, debug, info, warning, error };
     class Logger;
 
-    class LogMessage {
+    export class LogMessage {
         Logger* logger;
         LogLevel level;
         std::stringstream ss;
@@ -21,7 +21,7 @@ namespace debug {
         }
     };
 
-    class Logger {
+    export class Logger {
         const std::string name;
     public:
         Logger(std::string name) : name(std::move(name)) { }
@@ -32,7 +32,7 @@ namespace debug {
         LogMessage attention() { return LogMessage(this, LogLevel::attention); }
         LogMessage debug()     { return LogMessage(this, LogLevel::debug); }
         LogMessage info()      { return LogMessage(this, LogLevel::info); }
-        LogMessage error()     { return LogMessage(this, LogLevel::error); }
         LogMessage warning()   { return LogMessage(this, LogLevel::warning); }
+        LogMessage error() { return LogMessage(this, LogLevel::error); }
     };
 }

@@ -1,11 +1,15 @@
-#pragma once
-#include "bgfx_shader.hpp"
-//
-#include <fstream>
+module;
+#include <BGFX/bgfx.h>
 #include <SDL3/SDL_surface.h>
-#include "debug/logger.hpp"
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+module Assets;
 
-static debug::Logger logger("shader_load");
+import Logger;
+import Renderer;
+
+namespace fs = std::filesystem;
+static debug::Logger logger("asset_load");
 
 static std::string readFile(const fs::path& path) {
     if (!fs::exists(path) || !fs::is_regular_file(path)) {
@@ -65,10 +69,6 @@ bgfx::TextureHandle loadTextureWithSDL(const fs::path& path) {
     SDL_DestroySurface(converted);
     return handle;
 }
-
-#include "render/detail/bgfx_renderer.hpp"
-#define TINYOBJLOADER_IMPLEMENTATION
-#include <tiny_obj_loader.h>
 
 ModelData loadOBJ(const fs::path& path) {
     const std::string obj = readFile(path);

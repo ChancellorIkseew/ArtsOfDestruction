@@ -1,7 +1,10 @@
-#pragma once
-#include <cstdint>
+module;
+export module Binding;
+import std;
+using std::uint8_t;
+using std::size_t;
 
-enum class BindName : uint8_t { 
+export enum class BindName : uint8_t {
     Move_left,
     Move_right,
     Move_forward,
@@ -19,18 +22,18 @@ enum class BindName : uint8_t {
 
 constexpr size_t BINDNAMES_COUNT = static_cast<size_t>(BindName::Count);
 
-enum class InputType : uint8_t {
+export enum class InputType : uint8_t {
     keyboard,
     mouse,
 };
 
-enum class MouseWheelScroll : uint8_t {
+export enum class MouseWheelScroll : uint8_t {
     none,
     up,
     down
 };
 
-struct Binding {
+export struct Binding {
     int code;
     InputType inputType;
     mutable bool active = false;
@@ -41,7 +44,7 @@ struct Binding {
     Binding() = default;
 };
 
-class Controls {
+export class Controls {
     Binding bindings[BINDNAMES_COUNT];
 public:
     Binding at(BindName bindName) const {

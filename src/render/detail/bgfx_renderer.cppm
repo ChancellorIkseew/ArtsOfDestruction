@@ -1,25 +1,25 @@
-#pragma once
+module;
 #include <BGFX/bgfx.h>
-#include <stdexcept>
-#include <span>
-#include "../renderer.hpp"
-#include "bgfx_shader.hpp"
-#include "camera/camera.hpp"
-#include "math/math.hpp"
+export module Renderer;
 
-struct Vertex {
+import std;
+import Assets;
+import Camera;
+import Math;
+
+export struct Vertex {
     float x, y, z;
     uint32_t color;
     float u, v;
     float nx, ny, nz;
 };
 
-struct ModelData {
+export struct ModelData {
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;
 };
 
-class BGFXRenderer {
+export class Renderer {
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
     bgfx::ProgramHandle instancingShaderProgram = BGFX_INVALID_HANDLE;
 
@@ -27,7 +27,7 @@ class BGFXRenderer {
     bgfx::UniformHandle samplerTexColor;
     bgfx::TextureHandle texture;
 public:
-    BGFXRenderer(void* window, void* displayType, const IPoint2D size) {
+    Renderer(void* window, void* displayType, const vec2i size) {
         bgfx::Init init;
         init.platformData.nwh = window;
         init.platformData.ndt = displayType;
@@ -58,7 +58,7 @@ public:
 
         onResize(size);
     }
-    ~BGFXRenderer() {
+    ~Renderer() {
         if (bgfx::isValid(program))
             bgfx::destroy(program);
         bgfx::shutdown();
@@ -68,19 +68,19 @@ public:
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
         bgfx::touch(0);
     }
-    void render(const Camera& camera, const FPoint2D windowSize) {
-        const FMatrix4x4 view = camera.getView();
-        const FMatrix4x4 projection = camera.getProjection(windowSize);
+    void render(const Camera& camera, const vec2f windowSize) {
+        const mat4f view = camera.getView();
+        const mat4f projection = camera.getProjection(windowSize);
         bgfx::setViewTransform(0, &view, &projection);
         bgfx::frame();
     }
 
-    void onResize(const IPoint2D size) {
+    void onResize(const vec2i size) {
         bgfx::reset(size.x, size.y, BGFX_RESET_VSYNC);
         bgfx::setViewRect(0, 0, 0, size.x, size.y);
     }
 
-    void drawGeometry(const std::span<Vertex> vertices, const std::span<uint16_t> indices) const {
+    void drawGeometry(const std::span<const Vertex> vertices, const std::span<const uint16_t> indices) const {
         if (vertices.empty() || indices.empty())
             return;
 
@@ -105,7 +105,7 @@ public:
 
     void drawGeometryI(const std::span<Vertex> vertices,
         const std::span<uint16_t> indices,
-        const std::span<FMatrix4x4> instanceTransforms) const {
+        const std::span<mat4f> instanceTransforms) const {
 
         if (vertices.empty() || indices.empty() || instanceTransforms.empty())
             return;
@@ -120,11 +120,11 @@ public:
 
         if (!bgfx::allocTransientBuffers(&vertexBuffer, vertexLayout, vertexCount, &indexBuffer, indexCount))
             return;
-        bgfx::allocInstanceDataBuffer(&instanceBuffer, instanceCount, sizeof(FMatrix4x4));
+        bgfx::allocInstanceDataBuffer(&instanceBuffer, instanceCount, sizeof(mat4f));
 
         std::memcpy(vertexBuffer.data, vertices.data(), vertexCount * sizeof(Vertex));
         std::memcpy(indexBuffer.data, indices.data(), indexCount * sizeof(uint16_t));
-        std::memcpy(instanceBuffer.data, instanceTransforms.data(), instanceCount * sizeof(FMatrix4x4));
+        std::memcpy(instanceBuffer.data, instanceTransforms.data(), instanceCount * sizeof(mat4f));
 
         bgfx::setTexture(0, samplerTexColor, texture);
         bgfx::setVertexBuffer(0, &vertexBuffer);

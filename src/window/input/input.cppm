@@ -1,13 +1,13 @@
-#pragma once
-#include "binding.hpp"
+module;
 #include "config.hpp"
-#include "math/math.hpp"
-
 union SDL_Event;
+export module Input;
+import Binding;
+import Math;
 
-class Input {
+export class Input {
     Controls controls;
-    FPoint2D mousePosition, mouseMove;
+    vec2f mousePosition, mouseMove;
     MouseWheelScroll mouseWheelScroll = MouseWheelScroll::none;
 public:
     Input();
@@ -22,10 +22,10 @@ public:
         return controls.at(bindName).justTriggered;
     }
 
-    FPoint2D getMousePosition() const {
+    vec2f getMousePosition() const {
         return mousePosition;
     }
-    FPoint2D getMouseMove() const {
+    vec2f getMouseMove() const {
         return mouseMove;
     }
     MouseWheelScroll getMouseWheelScroll() const {

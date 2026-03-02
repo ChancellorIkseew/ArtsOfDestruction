@@ -1,9 +1,8 @@
-#include "window.hpp"
-//
+module;
 #include <SDL3/SDL.h>
-#include <stdexcept>
+module Window;
 
-Window::Window(IPoint2D size, WindowMode mode) {
+Window::Window(vec2i size, WindowMode mode) {
     if (!SDL_Init(SDL_INIT_VIDEO))
         throw std::runtime_error("Could not initialize SDL");
     sdlWindow = SDL_CreateWindow("AoD demo", 800, 600, SDL_WINDOW_RESIZABLE);
@@ -21,7 +20,7 @@ Window::~Window() {
     SDL_Quit();
 }
 
-void Window::setSize(IPoint2D size) {
+void Window::setSize(vec2i size) {
     this->size = size;
     if (mode == WindowMode::windowed)
         SDL_SetWindowSize(sdlWindow, size.x, size.y);
@@ -75,16 +74,15 @@ void Window::pollEvents() {
         case SDL_EVENT_QUIT:
             open = false;
             break;
-        case SDL_EVENT_WINDOW_RESIZED: {
+        case SDL_EVENT_WINDOW_RESIZED:
             justResized = true;
             SDL_GetWindowSize(sdlWindow, &size.x, &size.y);
             break;
-        }
         default:
             input.update(event);
             break;
         }
-    }  
+    }
 }
 
 void Window::showCursor(bool flag) {

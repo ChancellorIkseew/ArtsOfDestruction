@@ -1,72 +1,68 @@
-#include "logger.hpp"
-//
-#include <chrono>
-#include <ctime>
-#include <iomanip>
-#include <fstream>
-#include <mutex>
-#include <utility>
-#include "color_format.inl"
-#pragma warning(disable : 4996)
+module;
+#ifdef _WIN32
+#include <windows.h>
+#endif
+module Logger;
 
 using namespace debug;
+constexpr std::string_view CYAN    = "\033[36m"; // [cite: 75]
+constexpr std::string_view RED     = "\033[31m"; // [cite: 75]
+constexpr std::string_view YELLOW  = "\033[33m"; // [cite: 75]
+constexpr std::string_view DEFAULT = "\033[0m";
 static std::ofstream fout;
 static std::mutex mutex;
 static std::string utcOffset = "";
-constexpr unsigned int moduleLen = 20;
 
 LogMessage::~LogMessage() {
     logger->log(level, ss.str());
 }
 
 static void write(LogLevel level, const std::string& name, const std::string& message) {
-    std::stringstream ss;
-    switch (level) {
-    case LogLevel::attention:
-        ss << "[A]";
-        break;
-    case LogLevel::debug:
-#ifndef NDEBUG
-        ss << "[D]";
-        break;
+#ifdef NDEBUG
+    if (level == LogLevel::debug) return;
 #endif
-        return;
-    case LogLevel::info:
-        ss << "[I]";
-        break;
-    case LogLevel::warning:
-        ss << "[W]";
-        break;
-    case LogLevel::error:
-        ss << "[E]";
-        break;
+    char levelTag;
+    std::string_view color;
+    switch (level) {
+    case LogLevel::attention: levelTag = 'A'; color = CYAN;    break;
+    case LogLevel::debug:     levelTag = 'D'; color = DEFAULT; break;
+    case LogLevel::info:      levelTag = 'I'; color = DEFAULT; break;
+    case LogLevel::warning:   levelTag = 'W'; color = YELLOW;  break;
+    case LogLevel::error:     levelTag = 'E'; color = RED;     break;
     }
 
-    time_t tm = std::time(nullptr);
-    using namespace std::chrono;
-    auto ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()) % 1000;
-    ss << " " << std::put_time(std::localtime(&tm), "%Y/%m/%d %T");
-    ss << '.' << std::setfill('0') << std::setw(3) << ms.count();
-    ss << utcOffset << " [" << std::setfill(' ') << std::setw(moduleLen) << name << "] ";
-    ss << message;
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+    std::string finalString = std::format("[{}] {:%Y/%m/%d %H:%M:%S}.{:03d}{} [{:>20}] {}",
+        levelTag, now, ms.count(), utcOffset, name, message);
     {
-        std::lock_guard<std::mutex> lock(mutex);
-        auto string = ss.str();
+        std::lock_guard lock(mutex);
         if (fout.good()) {
-            fout << string << '\n';
+            fout << finalString << '\n';
             fout.flush();
         }
-        debug::printColorfull(string, level);
+        std::println("{}{}", color, finalString);
     }
 }
 
 void Logger::init(const std::string& filename) {
+#ifdef _WIN32
+    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD consoleMode = 0;
+    if (GetConsoleMode(consoleHandle, &consoleMode))
+        SetConsoleMode(consoleHandle, consoleMode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+#endif
     fout.open(filename);
-
-    time_t tm = std::time(nullptr);
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&tm), "%z");
-    utcOffset = ss.str();
+    auto now = std::chrono::system_clock::now();
+    try {
+        auto local_tz = std::chrono::current_zone();
+        auto offset = local_tz->get_info(now).offset;
+        auto hours = std::chrono::duration_cast<std::chrono::hours>(offset);
+        utcOffset = std::format("{:+03d}00", hours.count());
+    }
+    catch (...) {
+        utcOffset = "+0000";
+    }
 }
 
 void Logger::log(LogLevel level, const std::string& message) const {

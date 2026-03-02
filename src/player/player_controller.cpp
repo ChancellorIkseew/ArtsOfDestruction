@@ -1,9 +1,5 @@
-#include "player_controller.hpp"
-//
-#include <algorithm>
-#include "camera/camera.hpp"
-#include "math/rem_glm_convert.hpp"
-#include "window/input/input.hpp"
+module PlayerController;
+import std;
 
 using PlCtr = PlayerController;
 
@@ -28,8 +24,8 @@ void PlCtr::updateFreeCamSpeed(const Input& input) {
 void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) {
     updateFreeCamSpeed(input);
     // 1. Обработка поворота (Мышь)
-    FPoint2D mouseDelta = input.getMouseMove();
-    FPoint2D currentRot = camera.getRotation();
+    vec2f mouseDelta = input.getMouseMove();
+    vec2f currentRot = camera.getRotation();
 
     currentRot.x -= mouseDelta.x * lookSensitivity * deltaTimeNs;
     currentRot.y -= mouseDelta.y * lookSensitivity * deltaTimeNs;
@@ -40,9 +36,9 @@ void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) {
     camera.setRotation(currentRot);
 
     // 2. Обработка движения (Клавиатура)
-    glm::vec3 direction(0.0f);
-    glm::vec3 forward = camera.getForward();
-    glm::vec3 right = camera.getRight();
+    vec3f direction(0.0f);
+    vec3f forward = camera.getForward();
+    vec3f right = camera.getRight();
 
     if (input.active(BindName::Move_forward)) direction += forward;
     if (input.active(BindName::Move_back))    direction -= forward;
@@ -54,9 +50,9 @@ void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) {
     // Нормализуем, чтобы по диагонали не бегать быстрее
     if (glm::length(direction) > 0.0f) {
         direction = glm::normalize(direction);
-        FPoint3D offset = toRem(direction * freeCamSpeed * deltaTimeNs);
+        vec3f offset = direction * freeCamSpeed * deltaTimeNs;
 
-        FPoint3D position = camera.getPosition();
+        vec3f position = camera.getPosition();
         position.x += offset.x;
         position.y += offset.y;
         position.z += offset.z;

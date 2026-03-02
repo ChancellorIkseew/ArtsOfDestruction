@@ -1,9 +1,10 @@
-#pragma once
+module;
+export module PlayerController;
 
-class Camera;
-class Input;
+import Camera;
+import Input;
 
-class PlayerController {
+export class PlayerController {
     float freeCamSpeed = 0.000'000'005f;
     float lookSensitivity = 0.000'000'001f;
 public:

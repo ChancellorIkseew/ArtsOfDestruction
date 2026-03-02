@@ -1,9 +1,11 @@
-#pragma once
-#include "render/detail/bgfx_renderer.hpp"
+module;
+export module DemoScene;
+import std;
+import Renderer;
 
-void buildPrism(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, float x, float y, float z, float size) {
+export void buildPrism(std::vector<Vertex>& vertices, std::vector<std::uint16_t>& indices, float x, float y, float z, float size) {
     float height = size * 2.0f;
-    uint32_t color = 0xffffffff;
+    std::uint32_t color = 0xffffffff;
 
     struct Pt { float x, z; };
     Pt p[] = { {0.0f, size}, {-size, -size}, {size, -size} };
@@ -44,7 +46,7 @@ void buildPrism(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, f
 
 
 
-void buildFloor(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, float size, float tiling) {
+export void buildFloor(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices, float size, float tiling) {
     uint16_t startIdx = static_cast<uint16_t>(vertices.size());
 
     // Нормаль смотрит строго вверх (0, 1, 0)

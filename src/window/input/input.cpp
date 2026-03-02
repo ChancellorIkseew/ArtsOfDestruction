@@ -1,6 +1,6 @@
-#include "input.hpp"
-//
+module;
 #include <SDL3/SDL_events.h>
+module Input;
 
 Input::Input() {
     controls.setBinding(BindName::Move_forward, Binding(SDL_SCANCODE_W, InputType::keyboard));

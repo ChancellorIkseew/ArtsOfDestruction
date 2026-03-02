@@ -8,7 +8,7 @@ namespace fs = std::filesystem;
 static debug::Logger logger("io");
 
 template <class... Args>
-std::vector<std::byte> stopAndLog(const std::format_string<Args...> fmt, Args&&... args) {
+static std::vector<std::byte> stopAndLog(const std::format_string<Args...> fmt, Args&&... args) {
     logger.error() << std::format(fmt, std::forward<Args>(args)...);
     return std::vector<std::byte>();
 }

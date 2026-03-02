@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\assets\shaders.cppm" />
     <ClCompile Include="src\camera\camera.cppm" />
     <ClCompile Include="src\debug\logger.cpp" />
     <ClCompile Include="src\debug\logger.cppm" />

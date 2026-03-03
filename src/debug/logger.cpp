@@ -17,7 +17,7 @@ LogMessage::~LogMessage() {
     logger->log(level, ss.str());
 }
 
-static void write(LogLevel level, const std::string& name, const std::string& message) {
+void Logger::log(LogLevel level, const std::string& message) const {
 #ifdef NDEBUG
     if (level == LogLevel::debug) return;
 #endif
@@ -37,10 +37,8 @@ static void write(LogLevel level, const std::string& name, const std::string& me
         levelTag, now, ms.count(), utcOffset, name, message);
     {
         std::lock_guard lock(mutex);
-        if (fout.good()) {
-            fout << finalString << '\n';
-            fout.flush();
-        }
+        if (fout.good())
+            fout << finalString << std::endl;
         std::println("{}{}", color, finalString);
     }
 }
@@ -62,9 +60,7 @@ void Logger::init(const std::string& filename) {
     }
     catch (...) {
         utcOffset = "+0000";
+        Logger logger("logger_init");
+        logger.error() << "failed to get timezone";
     }
-}
-
-void Logger::log(LogLevel level, const std::string& message) const {
-    write(level, name, message);
 }

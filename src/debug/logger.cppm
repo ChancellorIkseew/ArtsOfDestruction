@@ -33,6 +33,6 @@ export namespace debug {
         LogMessage debug()     { return LogMessage(this, LogLevel::debug); }
         LogMessage info()      { return LogMessage(this, LogLevel::info); }
         LogMessage warning()   { return LogMessage(this, LogLevel::warning); }
-        LogMessage error() { return LogMessage(this, LogLevel::error); }
+        LogMessage error()     { return LogMessage(this, LogLevel::error); }
     };
 }

@@ -9,3 +9,4 @@ libs/** linguist-vendored
 
 # Not comon langs lighting
 *.sc linguist-language=glsl
+*.sh linguist-language=glsl

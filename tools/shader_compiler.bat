@@ -20,5 +20,7 @@ for %%f in (%SRC_DIR%\fs_*.sc) do (
     %SHADERC% -f %%f -o %OUT_DIR%\%%~nf.bin --type fragment --platform windows --profile s_5_0 -i %INCLUDE_DIR%
 )
 
-echo --- Compilation Finished ---
-pause
+echo Window will remain open. Close it manually using the 'X' button.
+
+:loop
+goto loop

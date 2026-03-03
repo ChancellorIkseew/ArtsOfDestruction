@@ -20,12 +20,8 @@ export struct ModelData {
 };
 
 export class Renderer {
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
-    bgfx::ProgramHandle instancingShaderProgram = BGFX_INVALID_HANDLE;
-
     bgfx::VertexLayout vertexLayout;
     bgfx::UniformHandle samplerTexColor;
-    bgfx::TextureHandle texture;
 public:
     Renderer(void* window, void* displayType, const vec2i size) {
         bgfx::Init init;
@@ -46,21 +42,10 @@ public:
             .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
             .end();
 
-        texture = loadTextureWithSDL("res/images/icon.png");
         samplerTexColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-        bgfx::ShaderHandle vertexShader = loadShader("res/shaders/vs_prism_tex_and_light.bin");
-        bgfx::ShaderHandle fragmentShader = loadShader("res/shaders/fs_prism_tex_and_light.bin");
-        program = bgfx::createProgram(vertexShader, fragmentShader, true);
-
-        bgfx::ShaderHandle vertexShader1 = loadShader("res/shaders/vs_instancing.bin");
-        bgfx::ShaderHandle fragmentShader1 = loadShader("res/shaders/fs_instancing.bin");
-        instancingShaderProgram = bgfx::createProgram(vertexShader1, fragmentShader1, true);
-
         onResize(size);
     }
     ~Renderer() {
-        if (bgfx::isValid(program))
-            bgfx::destroy(program);
         bgfx::shutdown();
     }
 
@@ -80,7 +65,8 @@ public:
         bgfx::setViewRect(0, 0, 0, size.x, size.y);
     }
 
-    void drawGeometry(const std::span<const Vertex> vertices, const std::span<const uint16_t> indices) const {
+    void drawGeometry(const std::span<const Vertex> vertices, const std::span<const uint16_t> indices,
+        bgfx::ProgramHandle shader, bgfx::TextureHandle texture) const {
         if (vertices.empty() || indices.empty())
             return;
 
@@ -100,12 +86,14 @@ public:
         bgfx::setVertexBuffer(0, &vertexBuffer);
         bgfx::setIndexBuffer(&indexBuffer);
         bgfx::setState(BGFX_STATE_DEFAULT);
-        bgfx::submit(0, program);
+        bgfx::submit(0, shader);
     }
 
     void drawGeometryI(const std::span<Vertex> vertices,
         const std::span<uint16_t> indices,
-        const std::span<mat4f> instanceTransforms) const {
+        const std::span<mat4f> instanceTransforms,
+        bgfx::ProgramHandle shader,
+        bgfx::TextureHandle texture) const {
 
         if (vertices.empty() || indices.empty() || instanceTransforms.empty())
             return;
@@ -131,6 +119,6 @@ public:
         bgfx::setIndexBuffer(&indexBuffer);
         bgfx::setInstanceDataBuffer(&instanceBuffer);
         bgfx::setState(BGFX_STATE_DEFAULT);
-        bgfx::submit(0, instancingShaderProgram);
+        bgfx::submit(0, shader);
     }
 };

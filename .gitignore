@@ -2,6 +2,7 @@
 build/
 obj/
 res/scripts/
+res/shaders
 saves/
 screenshots/
 controls.tin

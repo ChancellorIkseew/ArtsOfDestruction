@@ -10,9 +10,9 @@ import Logger;
 namespace fs = std::filesystem;
 static debug::Logger logger("shaders");
 
-export enum class Shader {
-    main,
-    instancing,
+export enum class Shader : size_t {
+    diffuse,
+    diffuse_instancing,
     // other
     count
 };
@@ -37,13 +37,14 @@ static bgfx::ProgramHandle createShaderProgram(const fs::path& vertex, const fs:
 }
 
 export class Shaders {
-    std::array<bgfx::ProgramHandle, size_t(Shader::count)> programs;
+    static constexpr size_t SHADER_COUNT = static_cast<size_t>(Shader::count);
+    std::array<bgfx::ProgramHandle, SHADER_COUNT> programs;
 public:
     Shaders() {
+        const fs::path PATH = "res/shaders";
         programs.fill(BGFX_INVALID_HANDLE);
-        programs[static_cast<size_t>(Shader::main)] = createShaderProgram(
-            "res/shaders/vs_prism_tex_and_light.bin",
-            "res/shaders/fs_prism_tex_and_light.bin"); // names will be changed.
+        programs[static_cast<size_t>(Shader::diffuse)] = createShaderProgram(
+            PATH / "vs_diffuse.bin", PATH / "fs_diffuse.bin");
         // other shaders.
     }
 

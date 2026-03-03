@@ -6,6 +6,8 @@ import Logger;
 import Math;
 import PlayerController;
 import Renderer;
+import Shaders;
+import Textures;
 import Window;
 
 static debug::Logger logger("main");
@@ -15,6 +17,8 @@ int main() {
     Window window({ 1280, 720 }, WindowMode::windowed);
     NativeHandle handle = window.getNativeHandle();
     Renderer renderer(handle.window, handle.displayType ,window.getSize());
+    Shaders shaders;
+    Texture texture;
     const Input& input = window.getInput();
     PlayerController playerController;
     
@@ -36,28 +40,7 @@ int main() {
     std::vector<mat4f> instanceMatrices;
     std::uint32_t gridSide = 10;
     float spacing = 2.0f;
-    /*
-    for (uint32_t z = 0; z < gridSide; ++z) {
-        for (uint32_t x = 0; x < gridSide; ++x) {
-            // Создаем базовую матрицу (Identity)
-            mat4f model = mat4f(1.0f);
-
-            // 1. Позиция (перемещаем куст в точку на сетке)
-            model = glm::translate(model, vec3f(x * spacing, 0.0f, z * spacing));
-
-            // 2. Поворот (необязательно, но добавим немного рандома для живости)
-            // Если куст плоский, можно вращать только вокруг оси Y
-            float randomRotation = (float)(rand() % 360);
-            model = glm::rotate(model, glm::radians(randomRotation), vec3f(0.0f, 1.0f, 0.0f));
-
-            // 3. Масштаб (чуть-чуть варьируем размер)
-            float scale = 0.8f + (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * 0.4f;
-            model = glm::scale(model, vec3f(scale));
-
-            //instanceMatrices.push_back(toRem(glm::transpose(model)));
-        }
-    }
-    */
+    
     window.showCursor(false);
     while (window.isOpen()) {
         window.pollEvents();
@@ -76,7 +59,7 @@ int main() {
         }
 
         renderer.clear();
-        renderer.drawGeometry(vertices, indices);
+        renderer.drawGeometry(vertices, indices, shaders.getShaderProgram(Shader::diffuse), texture.getTexture());
         renderer.render(camera, fWindowSize);
         window.makeFrameDelay();
     }

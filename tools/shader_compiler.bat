@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set SHADERC=shadercDebug.exe
+set SHADERC=shadercRelease.exe
 set SRC_DIR=..\res\shaders_src
 set OUT_DIR=..\res\shaders
 set INCLUDE_DIR=..\libs\include\BGFX\shader_include

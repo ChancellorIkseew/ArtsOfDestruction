@@ -1,7 +1,7 @@
 module;
 export module DemoScene;
 import std;
-import Renderer;
+import Vertex;
 
 export void buildPrism(std::vector<Vertex>& vertices, std::vector<std::uint16_t>& indices, float x, float y, float z, float size) {
     float height = size * 2.0f;

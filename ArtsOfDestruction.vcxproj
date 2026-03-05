@@ -33,6 +33,7 @@
     <ClCompile Include="src\render\detail\asset_load.cpp" />
     <ClCompile Include="src\render\detail\bgfx_renderer.cppm" />
     <ClCompile Include="src\render\detail\bgfx_shader.cppm" />
+    <ClCompile Include="src\render\detail\vertex.cppm" />
     <ClCompile Include="src\window\input\binding.cppm" />
     <ClCompile Include="src\window\input\input.cpp" />
     <ClCompile Include="src\window\input\input.cppm" />

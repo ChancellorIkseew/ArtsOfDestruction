@@ -45,6 +45,8 @@ public:
         programs.fill(BGFX_INVALID_HANDLE);
         programs[static_cast<size_t>(Shader::diffuse)] = createShaderProgram(
             PATH / "vs_diffuse.bin", PATH / "fs_diffuse.bin");
+        programs[static_cast<size_t>(Shader::diffuse_instancing)] = createShaderProgram(
+            PATH / "vs_diffuse_instancing.bin", PATH / "fs_diffuse_instancing.bin");
         // other shaders.
     }
 

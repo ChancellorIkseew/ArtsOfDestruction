@@ -7,50 +7,9 @@ module Assets;
 
 import IO;
 import Logger;
-import Renderer;
 
 namespace fs = std::filesystem;
 static debug::Logger logger("asset_load");
-
-bgfx::ShaderHandle loadShader(const fs::path& path) {
-    const auto str = IO::readBinFile(path);
-    const bgfx::Memory* mem = bgfx::copy(str.data(), static_cast<uint32_t>(str.size()));
-    bgfx::ShaderHandle shader = bgfx::createShader(mem);
-    if (!bgfx::isValid(shader))
-        logger.error() << "Shader corrupted: " << path.filename();
-    return shader;
-}
-
-bgfx::TextureHandle loadTextureWithSDL(const fs::path& path) {
-    const auto buffer = IO::readBinFile(path);
-    SDL_IOStream* io = SDL_IOFromConstMem(buffer.data(), buffer.size());
-    SDL_Surface* surface = SDL_LoadPNG_IO(io, true);
-    if (!surface)
-        return BGFX_INVALID_HANDLE;
-
-    // 2. Конвертируем в RGBA32, если формат другой (важно для предсказуемости)
-    SDL_Surface* converted = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
-    SDL_DestroySurface(surface);
-
-    if (!converted)
-        return BGFX_INVALID_HANDLE;
-
-    // 3. Копируем данные в память, которую bgfx отправит на GPU
-    const bgfx::Memory* mem = bgfx::copy(converted->pixels, converted->pitch * converted->h);
-
-    // 4. Создаем текстуру
-    bgfx::TextureHandle handle = bgfx::createTexture2D(
-        (uint16_t)converted->w,
-        (uint16_t)converted->h,
-        false, 1,
-        bgfx::TextureFormat::RGBA8,
-        BGFX_TEXTURE_NONE,
-        mem
-    );
-
-    SDL_DestroySurface(converted);
-    return handle;
-}
 
 ModelData loadOBJ(const fs::path& path) {
     const std::string obj = IO::loadTextFile(path);

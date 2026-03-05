@@ -8,6 +8,7 @@ import PlayerController;
 import Renderer;
 import Shaders;
 import Textures;
+import Vertex;
 import Window;
 
 static debug::Logger logger("main");
@@ -41,6 +42,24 @@ int main() {
     std::uint32_t gridSide = 10;
     float spacing = 2.0f;
     
+    std::vector<InstanceData> instances;
+    int count = 10;
+
+    for (int i = 0; i < count; ++i) {
+        InstanceData data;
+        mat4f model = mat4f(1.0f);
+        model = glm::translate(model, vec3f((float)i * 2.0f, 0.0f, 0.0f));
+
+        data.transform = model;
+        //data.transform = glm::transpose(model);
+        data.textureIndex = 0.0f;
+        data.padding.fill(0);
+        instances.push_back(data);
+    }
+
+    std::printf("Vertex size: %zu (expected 36)\n", sizeof(Vertex));
+    std::printf("InstanceData size: %zu (expected 80)\n", sizeof(InstanceData));
+    
     window.showCursor(false);
     while (window.isOpen()) {
         window.pollEvents();
@@ -59,8 +78,11 @@ int main() {
         }
 
         renderer.clear();
-        renderer.drawGeometry(vertices, indices, shaders.getShaderProgram(Shader::diffuse), texture.getTexture());
-        renderer.render(camera, fWindowSize);
+        renderer.setView(camera, fWindowSize);
+        //renderer.drawGeometry(vertices, indices, shaders.getShaderProgram(Shader::diffuse), texture.getTexture(), 0.0f);
+        renderer.drawGeometryI(vertices, indices, instances, shaders.getShaderProgram(Shader::diffuse_instancing), texture.getTexture());
+        
+        renderer.render();
         window.makeFrameDelay();
     }
 

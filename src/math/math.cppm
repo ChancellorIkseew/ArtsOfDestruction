@@ -15,6 +15,7 @@ export namespace glm {
     using vec2i = ivec2;
     using vec2f = vec2;
     using vec3f = vec3;
+    using vec4f = vec4;
     using mat4f = mat4;
     using quatf = quat;
 }
@@ -22,6 +23,7 @@ export namespace glm {
 export using vec2i = glm::ivec2;
 export using vec2f = glm::vec2;
 export using vec3f = glm::vec3;
+export using vec4f = glm::vec4;
 export using mat4f = glm::mat4;
 
 export namespace glm {
@@ -31,6 +33,7 @@ export namespace glm {
     using ::glm::perspectiveLH_ZO;
     using ::glm::orthoLH_ZO;
     using ::glm::lookAtLH;
+    using ::glm::transpose;
 
     using ::glm::normalize;
     using ::glm::cross;

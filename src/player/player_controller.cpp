@@ -23,17 +23,12 @@ void PlCtr::updateFreeCamSpeed(const Input& input) {
 
 void PlCtr::update(Camera& camera, const Input& input, float deltaTimeNs) {
     updateFreeCamSpeed(input);
-    // 1. Обработка поворота (Мышь)
     vec2f mouseDelta = input.getMouseMove();
-    vec2f currentRot = camera.getRotation();
+    vec2f cameraRotation = camera.getRotation();
 
-    currentRot.x -= mouseDelta.x * lookSensitivity * deltaTimeNs;
-    currentRot.y -= mouseDelta.y * lookSensitivity * deltaTimeNs;
-
-    // Ограничиваем наклон головы (Pitch), чтобы не сделать сальто
-    currentRot.y = std::clamp(currentRot.y, -HALF_PI_F, HALF_PI_F);
-
-    camera.setRotation(currentRot);
+    cameraRotation -= mouseDelta * lookSensitivity * deltaTimeNs;
+    cameraRotation.y = std::clamp(cameraRotation.y, -HALF_PI_F, HALF_PI_F); // clamp pitch(тангаж)
+    camera.setRotation(cameraRotation);
 
     // 2. Обработка движения (Клавиатура)
     vec3f direction(0.0f);

@@ -108,7 +108,6 @@ public:
         std::memcpy(indexBuffer.data, indices.data(), indexCount * sizeof(uint16_t));
         std::memcpy(instanceBuffer.data, instanceTransforms.data(), instanceCount * sizeof(InstanceData));
 
-        bgfx::setTransform(nullptr);
         bgfx::setTexture(0, samplerTexColor, texture);
         bgfx::setVertexBuffer(0, &vertexBuffer);
         bgfx::setIndexBuffer(&indexBuffer);

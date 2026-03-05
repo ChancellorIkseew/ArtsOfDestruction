@@ -51,7 +51,6 @@ int main() {
         model = glm::translate(model, vec3f((float)i * 2.0f, 0.0f, 0.0f));
 
         data.transform = model;
-        //data.transform = glm::transpose(model);
         data.textureIndex = 0.0f;
         data.padding.fill(0);
         instances.push_back(data);

@@ -32,7 +32,7 @@ export namespace IO {
         return buffer;
     }
 
-    std::string loadTextFile(const fs::path& path) {
+    std::string readTextFile(const fs::path& path) {
         auto blob = readBinFile(path);
         if (blob.empty())
             return "";
